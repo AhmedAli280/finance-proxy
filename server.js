@@ -6,7 +6,7 @@ app.use(express.json());
 app.all("*", async (req, res) => {
   try {
     // ✅ اجعل كل المسارات تتحول إلى /
-    const target = "https://us-central1-cfo-system.cloudfunctions.net/finance";
+    const target = "https://cfo-api-322380215405.us-central1.run.app";
     console.log("🔁 Forwarding to:", target);
 
     const response = await fetch(target, {
