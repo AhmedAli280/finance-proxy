@@ -5,7 +5,7 @@ app.use(express.json());
 
 app.all("*", async (req, res) => {
   try {
-    const target = "https://finance-lganokgllq-uc.a.run.app" + req.path;
+    const target = "https://us-central1-cfo-system.cloudfunctions.net/finance" + req.path;
     console.log("🔁 Forwarding to:", target);
     const response = await fetch(target, {
       method: req.method,
