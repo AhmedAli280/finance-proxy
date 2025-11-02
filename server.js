@@ -5,17 +5,23 @@ app.use(express.json());
 
 app.all("*", async (req, res) => {
   try {
-    const response = await fetch("https://finance-lganokgllq-uc.a.run.app" + req.path, {
+    const target = "https://finance-lganokgllq-uc.a.run.app" + req.path;
+    console.log("🔁 Forwarding to:", target);
+    const response = await fetch(target, {
       method: req.method,
       headers: { "Content-Type": "application/json" },
-      body: req.method !== "GET" ? JSON.stringify(req.body) : undefined
+      body: req.method !== "GET" ? JSON.stringify(req.body) : undefined,
+      timeout: 10000
     });
-    const data = await response.text();
-    res.status(response.status).send(data);
-  } catch (e) {
-    res.status(500).send(e.toString());
+
+    const text = await response.text();
+    console.log("✅ Response:", text);
+    res.status(response.status).send(text);
+  } catch (error) {
+    console.error("❌ Proxy error:", error.message);
+    res.status(500).json({ ok: false, message: "Proxy failed: " + error.message });
   }
 });
 
-app.listen(8080, () => console.log("✅ Proxy running on port 8080"));
+app.listen(8080, () => console.log("🚀 Proxy running on port 8080"));
 export default app;
