@@ -5,18 +5,19 @@ app.use(express.json());
 
 app.all("*", async (req, res) => {
   try {
-    const target = "https://us-central1-cfo-system.cloudfunctions.net/finance" + req.path;
+    // ✅ اجعل كل المسارات تتحول إلى /
+    const target = "https://us-central1-cfo-system.cloudfunctions.net/finance";
     console.log("🔁 Forwarding to:", target);
+
     const response = await fetch(target, {
-      method: req.method,
+      method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: req.method !== "GET" ? JSON.stringify(req.body) : undefined,
-      timeout: 10000
+      body: JSON.stringify(req.body)
     });
 
-    const text = await response.text();
-    console.log("✅ Response:", text);
-    res.status(response.status).send(text);
+    const data = await response.text();
+    console.log("✅ Response:", data);
+    res.status(response.status).send(data);
   } catch (error) {
     console.error("❌ Proxy error:", error.message);
     res.status(500).json({ ok: false, message: "Proxy failed: " + error.message });
